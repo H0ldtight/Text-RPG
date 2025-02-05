@@ -8,4 +8,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="C:\Users\h0ldt\Desktop\Text-RPG\Text RPG\Text RPG\Program.cs" Link="Program.cs" />
+  </ItemGroup>
+
 </Project>

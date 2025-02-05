@@ -67,15 +67,16 @@ namespace Text_RPG
         {
             Items = new List<Item>();
 
-            new Item("수련자 갑옷", "| 방어력 +5 | 수련에 도움을 주는 갑옷입니다. |", 0, 5, 1000);
-            new Item("무쇠 갑옷", "| 방어력 +9 | 무쇠로 만들어져 튼튼한 갑옷입니다. |", 0, 9, 2000);
-            new Item("스파르타의 갑옷", "| 방어력 +15 | 수련에 도움을 주는 갑옷입니다. |", 0, 15, 3500);
-            new Item("낡은 검", "| 공격력 +2 | 쉽게 볼 수 있는 낡은 검 입니다. |", 0, 2, 600);
-            new Item("청동 도끼", "| 공격력 +5 | 어디선가 사용됐던거 같은 도끼입니다. |", 0, 5, 1500);
-            new Item("스파르타의 창", "| 공격력 +7 | 스파르타의 전사들이 사용했다는 전설의 창입니다. |", 0, 5, 3000);
-           
+            // 아이템을 리스트에 추가하는 방법
+            Items.Add(new Item("수련자 갑옷", "| 방어력 +5 | 수련에 도움을 주는 갑옷입니다. |", 0, 5, 1000));
+            Items.Add(new Item("무쇠 갑옷", "| 방어력 +9 | 무쇠로 만들어져 튼튼한 갑옷입니다. |", 0, 9, 2000));
+            Items.Add(new Item("스파르타의 갑옷", "| 방어력 +15 | 수련에 도움을 주는 갑옷입니다. |", 0, 15, 3500));
+            Items.Add(new Item("낡은 검", "| 공격력 +2 | 쉽게 볼 수 있는 낡은 검 입니다. |", 0, 2, 600));
+            Items.Add(new Item("청동 도끼", "| 공격력 +5 | 어디선가 사용됐던거 같은 도끼입니다. |", 0, 5, 1500));
+            Items.Add(new Item("스파르타의 창", "| 공격력 +7 | 스파르타의 전사들이 사용했다는 전설의 창입니다. |", 0, 5, 3000));
         }
     }
+
 
     public class Program
     {
@@ -94,9 +95,11 @@ namespace Text_RPG
     public class Spartavillage
     {
         private Player player;
+        private Shop shop;
         public Spartavillage(Player player)
         {
             this.player = player;
+            this.shop = new Shop();
         }
 
         public void MainSelect()
@@ -125,7 +128,7 @@ namespace Text_RPG
                             Inventory();
                             break;
                         case 3:
-                            Shop();
+                            ShopSelect();
                             break;
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
@@ -221,7 +224,7 @@ namespace Text_RPG
                             InventoryEquippedmanagemnt();
                             break;
                         case 0:
-                            PlayerInfo();
+                            MainSelect();
                             break;
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
@@ -237,7 +240,15 @@ namespace Text_RPG
                 }
             }
         }
-
+        public void PlayerItems()
+        {
+            Console.WriteLine("상점의 아이템 목록입니다:");
+            foreach (var item in player.Inventory)  // player 객체의 Inventory 리스트를 사용
+            {
+                string status = item.Equipped ? "[E]" : $"";
+                Console.WriteLine($"- {status}{item.Name} {item.Info} ");
+            }
+        }
         public void InventoryEquippedmanagemnt()
         {
             while (true)
@@ -247,6 +258,8 @@ namespace Text_RPG
                 Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
                 Console.WriteLine();
                 Console.WriteLine("[아이템 목록]");
+                Console.WriteLine();
+                PlayerItems();
                 Console.WriteLine();
                 Console.WriteLine("0. 나가기");
                 Console.WriteLine();
@@ -274,10 +287,53 @@ namespace Text_RPG
                 }
             }
         }
-
-        public void Shop()
+        public void ShopItems()
         {
-            Console.WriteLine("미완성입니다");
+            foreach (var item in shop.Items)  // shop 객체의 Items 리스트를 사용
+            {
+                // "구매완료"는 Soldout이 true일 경우 출력, 아니면 가격 출력
+                string status = item.Soldout ? "구매완료" : $"{item.Gold} G";
+                Console.WriteLine($"- {item.Name} {item.Info} {status}");
+            }
+        }
+        public void ShopSelect()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("상점");
+                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                Console.WriteLine();
+                Console.WriteLine("[보유 골드]");
+                Console.WriteLine($"금액: {player.Gold}G");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
+                ShopItems();
+                Console.WriteLine();
+                Console.WriteLine("1.아이템 구매");
+                Console.WriteLine("0.나가기");
+
+
+                if (int.TryParse(Console.ReadLine(), out int Equippedmanagemntselect))
+                {
+                    switch (Equippedmanagemntselect)
+                    {
+                        case 0:
+                            MainSelect();
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.Write(">>");
+                }
+            }
         }
     }
 }
